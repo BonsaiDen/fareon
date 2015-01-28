@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "name": "lithian",
     "description": "A minimal FPS server / client framework",
     "keywords": ["fps", "client", "server", "networking", "multiplayer"],
