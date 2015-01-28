@@ -1,5 +1,5 @@
-litian - Minimal FPS Game Server 
---------------------------------
+lithian - Minimal FPS Game Server 
+---------------------------------
 
 **lithian** is JavaScript based, minimal client / server framework for creating 
 fast paced multiplayer action games.
