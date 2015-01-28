@@ -1,7 +1,7 @@
-lithian - Minimal FPS Game Server 
+fareon - Minimal FPS Game Server 
 ---------------------------------
 
-**lithian** is JavaScript based, minimal client / server framework for creating 
+**fareon** is JavaScript based, minimal client / server framework for creating 
 fast paced multiplayer action games.
 
 It archives this goal by using the following techniques:
@@ -14,7 +14,7 @@ It archives this goal by using the following techniques:
 
 ## API / Usage
 
-Right now **lithian** is really just a bare-metal framework abstraction the 
+Right now **fareon** is really just a bare-metal framework abstraction the 
 underlying networking logic. 
 
 
