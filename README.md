@@ -1,7 +1,7 @@
-Carbon - Minimal FPS Game Server 
+litian - Minimal FPS Game Server 
 --------------------------------
 
-**Carbon** is JavaScript based, minimal client / server framework for creating 
+**lithian** is JavaScript based, minimal client / server framework for creating 
 fast paced multiplayer action games.
 
 It archives this goal by using the following techniques:
@@ -14,10 +14,8 @@ It archives this goal by using the following techniques:
 
 ## API / Usage
 
-Right now **Carbon** is really just a bare-metal framework. 
-
-I'm currently working on a 2D top-down shooter game for up to 8 players which 
-will serve as the demo application for the library.
+Right now **lithian** is really just a bare-metal framework abstraction the 
+underlying networking logic. 
 
 
 ## Licensed under MIT
