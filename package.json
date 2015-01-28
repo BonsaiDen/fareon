@@ -1,0 +1,32 @@
+{
+    "version": "0.0.1",
+    "name": "lithian",
+    "description": "A minimal FPS server / client framework",
+    "keywords": ["fps", "client", "server", "networking", "multiplayer"],
+
+    "author": "Ivo Wetzel <ivo.wetzel@googlemail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BonsaiDen/lithian"
+    },
+
+    "bugs": {
+        "url": "http://github.com/BonsaiDen/lithian/issues"
+    },
+
+    "directories": {
+        "lib": "./lib"
+    },
+
+    "main": "./index.js",
+
+    "engines": {
+        "node": ">=0.8"
+    },
+
+    "licenses": [{
+        "type": "MIT",
+        "url": "https://github.com/BonsaiDen/lithian/raw/master/LICENSE"
+    }]
+}
+
