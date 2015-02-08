@@ -1,32 +1,37 @@
 {
-    "version": "0.0.2",
-    "name": "fareon",
-    "description": "A minimal FPS server / client framework",
-    "keywords": ["fps", "client", "server", "networking", "multiplayer"],
-
-    "author": "Ivo Wetzel <ivo.wetzel@googlemail.com>",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/BonsaiDen/fareon"
-    },
-
-    "bugs": {
-        "url": "http://github.com/BonsaiDen/fareon/issues"
-    },
-
-    "directories": {
-        "lib": "./lib"
-    },
-
-    "main": "./index.js",
-
-    "engines": {
-        "node": ">=0.8"
-    },
-
-    "licenses": [{
-        "type": "MIT",
-        "url": "https://github.com/BonsaiDen/fareon/raw/master/LICENSE"
-    }]
+  "version": "0.0.2",
+  "name": "fareon",
+  "description": "A minimal FPS server / client framework",
+  "keywords": [
+    "fps",
+    "client",
+    "server",
+    "networking",
+    "multiplayer"
+  ],
+  "author": "Ivo Wetzel <ivo.wetzel@googlemail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BonsaiDen/fareon"
+  },
+  "bugs": {
+    "url": "http://github.com/BonsaiDen/fareon/issues"
+  },
+  "directories": {
+    "client": "./client",
+    "server": "./server",
+    "shared": "./shared"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/BonsaiDen/fareon/raw/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "bisonjs": "^2.0.2"
+  }
 }
-

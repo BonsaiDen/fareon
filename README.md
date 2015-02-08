@@ -1,12 +1,12 @@
-fareon - Minimal FPS Game Server 
----------------------------------
+fareon - Multiplayer Game Server
+--------------------------------
 
 **fareon** is JavaScript based, minimal client / server framework for creating 
 fast paced multiplayer action games.
 
 It archives this goal by using the following techniques:
 
-- Low frequency tick based state updates
+- Low Frequency Tick based State Updates
 - Client-Side Prediction 
 - Server Reconciliation
 - Entity Interpolation

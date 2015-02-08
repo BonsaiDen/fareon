@@ -1,49 +1,51 @@
 // Dependencies ---------------------------------------------------------------
 // ----------------------------------------------------------------------------
 var Class = require('../shared/lib/Class').Class,
-    Action = require('../shared/Action');
+    State = require('../shared/State'),
+    Message = require('../shared/Message');
 
 
-// FPS Player Base Class ------------------------------------------------------
+// Entity Base Class ------------------------------------------------------
 // ----------------------------------------------------------------------------
-var Player = Class(function(client, id, isLocal) {
+var Entity = Class(function(client, stateClass) {
+
+    // Entity State Class
+    stateClass = stateClass || State;
 
     // References
     this._client = client;
+    this._player = null;
 
     // Basics
-    this._id = id;
-    this._isLocal = isLocal;
+    this._id = null;
+    this._isVisible = null;
 
     // Input States
     this._inputStates = [];
 
     // Position State
-    this._state = {
-        x: 0,
-        y: 0,
-        z: 0,
-        r: 0
-    };
-
-    this._lastState = {
-        x: 0,
-        y: 0,
-        z: 0,
-        r: 0
-    };
-
+    this._state = new stateClass(client);
+    this._lastState = new stateClass(client);
+    this._velocity = new stateClass(client);
 
 }, {
 
     // Public -----------------------------------------------------------------
+    show: function() {
+        this._isVisible = true;
+    },
+
+    hide: function() {
+        this._isVisible = false;
+    },
+
     update: function() {
     },
 
     tick: function(localTick, remoteTick, state, config) {
 
         // Control Local Player
-        if (this._isLocal) {
+        if (this.isControlled()) {
 
             // Replay local inputs against the last confirmed server state
             this._replayInputs(localTick, remoteTick, state);
@@ -59,26 +61,29 @@ var Player = Class(function(client, id, isLocal) {
 
         // Update the state of remote players
         } else {
-            this._lastState.x = this._state.x;
-            this._lastState.y = this._state.y;
-            this._lastState.z = this._state.z;
-            this._lastState.r = this._state.r;
-            this._state.x = state[0];
-            this._state.y = state[1];
-            this._state.z = state[2];
-            this._state.r = state[3];
+            this._lastState.set(this._state, false);
+            this._state.set(state, false);
         }
 
     },
 
-    sendEvent: function(type, data) {
+    sendEvent: function(event) {
+
+        event.setTick(this._client.getTick());
+
         this._client.send([
-            Action.CLIENT_EVENT, [
-                this._client.getTick() % 256,
-                type,
-                data
+            Message.CLIENT_EVENT, [
+                event.getTick(), // Event Tick
+                2, // Event target (0 Game, 1 Player, 2 Entity)
+                event.TypeId, // Event Class Type ID
+                event.serialize() // Event Data
             ]
         ]);
+
+    },
+
+    clearInput: function() {
+        this._inputStates.length = 0;
     },
 
     destroy: function() {
@@ -91,47 +96,44 @@ var Player = Class(function(client, id, isLocal) {
 
     // Updates ----------------------------------------------------------------
     applyInput: function(velocity, inputState, config) {
-        return velocity;
+
     },
 
     applyState: function(state) {
-        this._state.x = state[0];
-        this._state.y = state[1];
-        this._state.z = state[2];
-        this._state.r = state[3];
-        this._lastState.x = this._state.x;
-        this._lastState.y = this._state.y;
-        this._lastState.z = this._state.z;
-        this._lastState.r = this._state.r;
+        this._state.set(state, false);
+        this._lastState.set(this._state, false);
     },
 
-    applyData: function() {
+
+    // Setters ----------------------------------------------------------------
+    setId: function(id) {
+        this._id = id;
     },
 
-    applyEvent: function(localTick, remoteTick, event, config) {
+    setPlayer: function(player) {
+        this._player = player;
     },
 
 
     // Getters ----------------------------------------------------------------
-    isLocal: function() {
-        return this._isLocal;
-    },
-
     getId: function() {
         return this._id;
+    },
+
+    getPlayer: function() {
+        return this._player;
     },
 
     getInput: function() {
         return [];
     },
 
-    getState: function() {
-        return [
-            this._state.x - this._lastState.x,
-            this._state.y - this._lastState.y,
-            this._state.z - this._lastState.z,
-            this._state.r
-        ];
+    isControlled: function() {
+        return this._player && this._player.isLocal();
+    },
+
+    isVisible: function() {
+        return this._isVisible;
     },
 
 
@@ -159,20 +161,16 @@ var Player = Class(function(client, id, isLocal) {
 
     _replayInputs: function(localTick, remoteTick, state) {
 
-        // Reset local state to last one confirmed by the server
-        this._state.x = state[0];
-        this._state.y = state[1];
-        this._state.z = state[2];
-        this._lastState.x = state[0];
-        this._lastState.y = state[1];
-        this._lastState.z = state[2];
+        // Merge state confirmed by the server with local states
+        this._state.set(state, true);
+        this._lastState.set(state, true);
 
         // Find the last confirmed local input
         var confirmed = -1,
-            i,
-            l;
+            i, l;
 
-        // Search backwards through the input state buffer
+        // Search backwards through the input state buffer to find the last
+        // confirmed input state
         for(i = this._inputStates.length - 1; i >= 0; i--) {
             if (this._inputStates[i][0] === remoteTick) {
                 confirmed = i;
@@ -197,39 +195,33 @@ var Player = Class(function(client, id, isLocal) {
     _applyInput: function(inputState, config) {
 
         // Store last state for interpolation
-        this._lastState.x = this._state.x;
-        this._lastState.y = this._state.y;
-        this._lastState.z = this._state.z;
-        this._lastState.r = this._state.r;
+        this._lastState.set(this._state, false);
 
-        var velocity = {
-           x: 0,
-           y: 0,
-           z: 0,
-           r: 0
-        };
+        // Reset velocity
+        this._velocity.reset();
 
         // Apply Input to velocity
-        this.applyInput(velocity, inputState, config);
+        this.applyInput(this._velocity, inputState, config);
 
         // Apply Level Collision
-        velocity = this._client.getLevel().applyCollision(this, this._state, velocity);
+        this._client.getLevel().applyEntityCollision(this, this._state, this._velocity);
 
-        this._state.x += velocity.x;
-        this._state.y += velocity.y;
-        this._state.z += velocity.z;
+        // Update state with velocity
+        this._state.update(this._velocity);
 
     },
 
+    // Network ----------------------------------------------------------------
     _sendState: function(tick) {
         this._client.send([
-            Action.CLIENT_STATE,
-            [tick].concat(this.getState())
+            Message.CLIENT_STATE,
+            [tick, this._state.diff(this._lastState)]
         ]);
     }
 
 });
 
+
 // Exports --------------------------------------------------------------------
-module.exports = Player;
+module.exports = Entity;
 

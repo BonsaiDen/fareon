@@ -3,44 +3,42 @@
 var Class = require('../shared/lib/Class').Class;
 
 
-// FPS Player Base Class ------------------------------------------------------
+// Client Level Base Class ----------------------------------------------------
 // ----------------------------------------------------------------------------
-var Level = Class(function(server) {
+var Level = Class(function(client) {
 
     // References
-    this._server = server;
+    this._client = client;
 
 }, {
 
     // Public -----------------------------------------------------------------
     destroy: function() {
-        this._server = null;
+        this._client = null;
     },
 
 
     // Getter -----------------------------------------------------------------
-    isClient: function() {
-        return false;
+    getParent: function() {
+        return this._client;
     },
 
-    isServer: function() {
+    isClient: function() {
         return true;
     },
 
-    getParent: function() {
-        return this._server;
+    isServer: function() {
+        return false;
     },
 
 
     // Collision --------------------------------------------------------------
-    applyCollision: function(player, position, velocity) {
-        return velocity;
+    applyEntityCollision: function(entity, position, velocity) {
     },
 
 
     // Serialization ----------------------------------------------------------
-    serialize: function() {
-        return [];
+    restore: function(data) {
     }
 
 });

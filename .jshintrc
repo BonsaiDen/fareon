@@ -21,7 +21,7 @@
     "node"        : true, // if the Node.js environment globals should be predefined
     "nonstandard" : false, // if non-standard (but widely adopted) globals should be predefined
     "couch"       : false, // if CouchDB globals should be predefined
-    "devel"       : true, // if logging globals should be predefined (console,// alert, etc.)
+    "devel"       : false, // if logging globals should be predefined (console,// alert, etc.)
     "browser"     : false, // if the standard browser globals should be predefined
     "dojo"        : false, // if Dojo Toolkit globals should be predefined
     "rhino"       : false, // if the Rhino environment globals should be predefined
@@ -77,7 +77,6 @@
     "white"       : false, // if strict whitespace rules apply
     "lastsemic"   : false  // if semicolons may be ommitted for the trailing  statements inside of a one-line blocks.
 }
-
 
 
 
